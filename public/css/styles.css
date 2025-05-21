@@ -1,0 +1,150 @@
+/* Main Variables */
+:root {
+    --primary: #10b981;
+    --primary-hover: #059669;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1f2937;
+    --border-color: #e5e7eb;
+    --success: #10b981;
+    --error: #ef4444;
+  }
+  
+  /* Base Styles */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+  
+  /* Animations */
+  .pulse {
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.7; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.7; }
+  }
+  
+  /* API Badge Styles */
+  .api-badge {
+    transition: all 0.3s ease;
+  }
+  
+  .api-badge.inactive {
+    color: #9ca3af;
+    background-color: #f3f4f6;
+  }
+  
+  .api-badge.active {
+    color: #059669;
+    background-color: #d1fae5;
+  }
+  
+  /* Navigation Styles */
+  .nav-item {
+    position: relative;
+    transition: all 0.3s;
+  }
+  
+  .nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary);
+    transition: all 0.3s;
+    transform: translateX(-50%);
+  }
+  
+  .nav-item:hover::after,
+  .nav-item.active::after {
+    width: 80%;
+  }
+  
+  /* Form Input Animations */
+  .form-input {
+    transition: all 0.3s;
+  }
+  
+  .form-input:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1), 0 2px 4px -1px rgba(16, 185, 129, 0.06);
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #10b981;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #059669;
+  }
+  
+  /* Recipe Card Animations */
+  .recipe-card {
+    transition: all 0.3s ease;
+  }
+  
+  .recipe-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Button Animations */
+  .btn-generate {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  .btn-generate::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgba(255,255,255,0.2);
+    transition: width 0.3s ease;
+    z-index: -1;
+  }
+  
+  .btn-generate:hover::before {
+    width: 100%;
+  }
+  
+  /* Mobile Navigation Styles */
+  .mobile-nav-item {
+    position: relative;
+  }
+  
+  .mobile-nav-item::before {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: all 0.3s;
+  }
+  
+  .mobile-nav-item.active::before

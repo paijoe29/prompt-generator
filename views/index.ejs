@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Image Prompt Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#FFDC00',
+                            hover: '#FFD000'
+                        },
+                        secondary: '#F0F0F0',
+                        dark: {
+                            DEFAULT: '#121212',
+                            lighter: '#1E1E1E',
+                            input: '#252525'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dark text-gray-100 font-sans">
+    <!-- Follow Me Button (Adjusted Position) -->
+    <div class="max-w-7xl mx-auto px-6 relative">
+        <a href="https://www.threads.com/@ori_fin" target="_blank" class="absolute top-4 right-6 z-50 bg-primary hover:bg-primary-hover text-black font-medium py-2 px-4 rounded-lg shadow-lg transform hover:-translate-y-1 transition duration-300 flex items-center">
+            <i class="fas fa-at mr-2"></i> Follow Me
+        </a>
+    </div>
+
+    <!-- Main content -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Title section with improved styling -->
+        <div class="text-center mb-12">
+            <div class="relative inline-block">
+                <span class="absolute -inset-1 blur-xl bg-primary/10 rounded-lg"></span>
+                <h1 class="relative text-4xl md:text-5xl font-bold mb-4 text-white inline-block">Text-to-Image <span class="text-primary">Prompt Generator</span></h1>
+            </div>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed mt-6 backdrop-blur-sm bg-dark/30 p-4 rounded-lg border border-gray-800/50">
+                Buat prompt yang detail dan menarik untuk text-to-image AI seperti Midjourney, DALL-E, atau Stable Diffusion berdasarkan kata kunci yang Anda masukkan.
+            </p>
+        </div>
+        
+        <!-- Content grid -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+            <!-- Form card -->
+            <div class="md:col-span-5 bg-dark-lighter rounded-xl shadow-xl border border-gray-800 overflow-hidden relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-primary">
+                <div class="px-6 py-5 border-b border-gray-800 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-white">Generator Prompt</h2>
+                </div>
+                <div class="p-6">
+                    <form id="promptForm">
+                        <div class="mb-6">
+                            <label for="keywords" class="block mb-2 text-sm font-medium text-gray-300">Kata Kunci *</label>
+                            <input type="text" id="keywords" class="w-full py-3 px-4 bg-dark-input text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200" placeholder="Contoh: gunung, matahari terbit, kabut" required>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="style" class="block mb-2 text-sm font-medium text-gray-300">Gaya Seni</label>
+                            <select id="style" class="w-full py-3 px-4 bg-dark-input text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 appearance-none bg-no-repeat pr-10" style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%239CA3AF%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M6 9l6 6 6-6%22/></svg>'); background-position: right 1rem center; background-size: 1rem;">
+                                <option value="">Otomatis/Acak</option>
+                                <option value="photorealistic">Photorealistic</option>
+                                <option value="illustration">Digital Illustration</option>
+                                <option value="painting">Painting</option>
+                                <option value="3d">3D Render</option>
+                                <option value="anime">Anime Style</option>
+                                <option value="abstract">Abstract Art</option>
+                                <option value="vintage">Vintage/Retro</option>
+                                <option value="fantasy">Fantasy Art</option>
+                                <option value="sci-fi">Science Fiction</option>
+                                <option value="pop-art">Pop Art</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="complexity" class="block mb-2 text-sm font-medium text-gray-300">Kompleksitas</label>
+                            <select id="complexity" class="w-full py-3 px-4 bg-dark-input text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 appearance-none bg-no-repeat pr-10" style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%239CA3AF%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M6 9l6 6 6-6%22/></svg>'); background-position: right 1rem center; background-size: 1rem;">
+                                <option value="simple">Simple - Sederhana dan Jelas</option>
+                                <option value="medium" selected>Medium - Seimbang</option>
+                                <option value="complex">Complex - Detail dan Artistik</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="ratio" class="block mb-2 text-sm font-medium text-gray-300">Aspect Ratio</label>
+                            <select id="ratio" class="w-full py-3 px-4 bg-dark-input text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 appearance-none bg-no-repeat pr-10" style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%239CA3AF%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M6 9l6 6 6-6%22/></svg>'); background-position: right 1rem center; background-size: 1rem;">
+                                <option value="16:9">16:9 - Landscape Wide</option>
+                                <option value="4:3">4:3 - Standard Landscape</option>
+                                <option value="1:1" selected>1:1 - Square</option>
+                                <option value="3:4">3:4 - Portrait</option>
+                                <option value="9:16">9:16 - Vertical/Mobile</option>
+                                <option value="2:1">2:1 - Panoramic</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="mood" class="block mb-2 text-sm font-medium text-gray-300">Mood/Nuansa</label>
+                            <select id="mood" class="w-full py-3 px-4 bg-dark-input text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200 appearance-none bg-no-repeat pr-10" style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%239CA3AF%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M6 9l6 6 6-6%22/></svg>'); background-position: right 1rem center; background-size: 1rem;">
+                                <option value="">Tidak Spesifik</option>
+                                <option value="happy">Happy - Ceria</option>
+                                <option value="dramatic">Dramatic - Dramatis</option>
+                                <option value="mysterious">Mysterious - Misterius</option>
+                                <option value="peaceful">Peaceful - Damai</option>
+                                <option value="nostalgic">Nostalgic - Nostalgia</option>
+                                <option value="futuristic">Futuristic - Futuristik</option>
+                                <option value="romantic">Romantic - Romantis</option>
+                                <option value="ethereal">Ethereal - Ajaib</option>
+                                <option value="creepy">Creepy - Menyeramkan</option>
+                                <option value="melancholic">Melancholic - Sendu</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="count" class="block mb-2 text-sm font-medium text-gray-300">Jumlah Prompt</label>
+                            <div class="flex items-center gap-4">
+                                <input type="range" id="count-slider" class="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary" min="1" max="5" value="3" step="1">
+                                <span id="count-value" class="min-w-[2.5rem] text-center text-sm font-semibold text-white bg-dark-input py-1 px-3 rounded-md">3</span>
+                            </div>
+                            <input type="hidden" id="count" value="3">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="apiKey" class="block mb-2 text-sm font-medium text-gray-300">Google Gemini API Key (Opsional)</label>
+                            <input type="text" id="apiKey" class="w-full py-3 px-4 bg-dark-input text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200" placeholder="Masukkan API key Gemini Anda">
+                            <span class="block mt-2 text-xs text-gray-400">Jika tidak diisi, akan menggunakan API key dari server.</span>
+                        </div>
+                        
+                        <div class="text-center mt-8">
+                            <button type="button" id="generateBtn" class="inline-flex items-center justify-center py-3 px-6 font-medium bg-primary text-black rounded-lg shadow-lg hover:bg-primary-hover hover:-translate-y-0.5 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-dark-lighter">
+                                <i class="fas fa-magic mr-2"></i> Generate Prompt
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Results card -->
+            <div class="md:col-span-7 bg-dark-lighter rounded-xl shadow-xl border border-gray-800 overflow-hidden relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-primary">
+                <div class="px-6 py-5 border-b border-gray-800 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-white">Hasil Prompt</h2>
+                    <div id="seed-container" class="hidden inline-flex items-center gap-1.5 bg-yellow-900 bg-opacity-10 text-yellow-300 text-xs font-semibold py-1.5 px-3.5 rounded-full">
+                        <i class="fas fa-random"></i> Seed: <span id="seed-value"></span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <!-- Loading indicator -->
+                    <div id="loadingIndicator" class="hidden flex flex-col items-center justify-center py-16 px-8">
+                        <div class="w-12 h-12 border-3 border-gray-200 border-opacity-20 border-t-primary rounded-full animate-spin mb-6"></div>
+                        <p class="text-gray-300">Sedang menghasilkan prompt yang menarik...</p>
+                    </div>
+                    
+                    <!-- API Key Error -->
+                    <div id="apiKeyError" class="hidden bg-red-900 bg-opacity-10 border-l-4 border-red-500 text-red-300 px-5 py-4 rounded-lg mb-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span id="apiKeyErrorMessage">API key tidak valid atau tidak tersedia. Silakan periksa kembali.</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Empty state -->
+                    <div id="initialState" class="flex flex-col items-center justify-center py-16 px-8 text-center text-gray-400">
+                        <i class="fas fa-lightbulb text-5xl opacity-30 text-primary mb-6"></i>
+                        <p>Prompt akan muncul di sini setelah Anda mengisi kata kunci dan menekan tombol "Generate Prompt".</p>
+                    </div>
+                    
+                    <!-- Prompt results -->
+                    <div id="promptResults" class="hidden flex flex-col gap-5">
+                        <!-- Prompt items will be added here dynamically -->
+                    </div>
+                    
+                    <!-- Action buttons -->
+                    <div id="actionButtons" class="hidden flex gap-3 justify-center mt-6">
+                        <button id="regenerateBtn" class="inline-flex items-center justify-center py-3 px-5 font-medium bg-primary text-black rounded-lg shadow-md hover:bg-primary-hover hover:-translate-y-0.5 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-dark-lighter">
+                            <i class="fas fa-sync-alt mr-2"></i> Regenerate
+                        </button>
+                        <button id="copyAllBtn" class="inline-flex items-center justify-center py-3 px-5 font-medium bg-transparent text-gray-300 border border-gray-700 rounded-lg hover:bg-white hover:bg-opacity-5 hover:text-white hover:-translate-y-0.5 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 focus:ring-offset-dark-lighter">
+                            <i class="fas fa-copy mr-2"></i> Copy Semua
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History section -->
+        <div class="bg-dark-lighter rounded-xl shadow-xl border border-gray-800 overflow-hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-800">
+                    <h2 class="text-xl font-semibold text-white">Riwayat Prompt</h2>
+                    <button id="clearHistoryBtn" class="flex items-center gap-1.5 text-sm text-red-400 bg-transparent py-1.5 px-2 rounded hover:bg-red-900 hover:bg-opacity-10 transition">
+                        <i class="fas fa-trash"></i> Hapus Semua
+                    </button>
+                </div>
+                
+                <p id="noHistoryMessage" class="text-center py-8 text-gray-400">Belum ada riwayat prompt.</p>
+                
+                <div id="historyContainer" class="flex flex-col gap-3">
+                    <!-- History items will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-lighter border-t border-gray-800 mt-12">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <p class="text-center text-sm text-gray-400">
+                &copy; 2025 Text-to-Image Prompt Generator. Made with <i class="fas fa-heart text-primary mx-1"></i> by ori.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const generateBtn = document.getElementById('generateBtn');
+            const regenerateBtn = document.getElementById('regenerateBtn');
+            const copyAllBtn = document.getElementById('copyAllBtn');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const promptResults = document.getElementById('promptResults');
+            const initialState = document.getElementById('initialState');
+            const actionButtons = document.getElementById('actionButtons');
+            const apiKeyError = document.getElementById('apiKeyError');
+            const apiKeyErrorMessage = document.getElementById('apiKeyErrorMessage');
+            const seedContainer = document.getElementById('seed-container');
+            const seedValue = document.getElementById('seed-value');
+            const countSlider = document.getElementById('count-slider');
+            const countValue = document.getElementById('count-value');
+            const historyContainer = document.getElementById('historyContainer');
+            const noHistoryMessage = document.getElementById('noHistoryMessage');
+            
+            // Set up count slider
+            countSlider.addEventListener('input', function() {
+                countValue.textContent = this.value;
+                document.getElementById('count').value = this.value;
+            });
+            
+            // History in localStorage
+            const MAX_HISTORY_ITEMS = 5;
+            let promptHistory = JSON.parse(localStorage.getItem('promptHistory') || '[]');
+            updateHistoryDisplay();
+            
+            // Last used seed for regeneration
+            let lastUsedSeed = null;
+            
+            // Generate button click
+            generateBtn.addEventListener('click', async function() {
+                generatePrompt();
+            });
+            
+            // Regenerate with same seed
+            regenerateBtn.addEventListener('click', function() {
+                generatePrompt(lastUsedSeed);
+            });
+            
+            // Copy all prompts
+            copyAllBtn.addEventListener('click', function() {
+                const allPrompts = Array.from(document.querySelectorAll('.prompt-text'))
+                    .map(el => el.textContent)
+                    .join('\n\n---\n\n');
+                
+                if (allPrompts) {
+                    navigator.clipboard.writeText(allPrompts)
+                        .then(() => {
+                            this.classList.add('bg-green-900', 'bg-opacity-20', 'text-green-400', 'border-green-800');
+                            const originalText = this.innerHTML;
+                            this.innerHTML = '<i class="fas fa-check mr-2"></i> Copied!';
+                            
+                            setTimeout(() => {
+                                this.classList.remove('bg-green-900', 'bg-opacity-20', 'text-green-400', 'border-green-800');
+                                this.innerHTML = originalText;
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Copy failed:', err);
+                            alert('Copy failed. Please try again.');
+                        });
+                }
+            });
+            
+            // Clear history
+            clearHistoryBtn.addEventListener('click', function() {
+                if (confirm('Apakah Anda yakin ingin menghapus semua riwayat?')) {
+                    localStorage.removeItem('promptHistory');
+                    promptHistory = [];
+                    updateHistoryDisplay();
+                }
+            });
+            
+            // Generate prompt function
+            async function generatePrompt(seed = null) {
+                const keywords = document.getElementById('keywords').value.trim();
+                const style = document.getElementById('style').value;
+                const complexity = document.getElementById('complexity').value;
+                const ratio = document.getElementById('ratio').value;
+                const mood = document.getElementById('mood').value;
+                const count = parseInt(document.getElementById('count').value);
+                const apiKey = document.getElementById('apiKey').value.trim();
+                
+                if (!keywords) {
+                    alert('Kata kunci wajib diisi.');
+                    return;
+                }
+                
+                // Sembunyikan hasil sebelumnya dan tampilkan loading
+                promptResults.classList.add('hidden');
+                actionButtons.classList.add('hidden');
+                seedContainer.classList.add('hidden');
+                initialState.classList.add('hidden');
+                apiKeyError.classList.add('hidden');
+                loadingIndicator.classList.remove('hidden');
+                
+                try {
+                    const response = await fetch('/generate-prompt', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            keywords,
+                            style,
+                            complexity,
+                            ratio,
+                            mood,
+                            count,
+                            apiKey,
+                            seed
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        if (data.needApiKey) {
+                            apiKeyErrorMessage.textContent = data.error;
+                            apiKeyError.classList.remove('hidden');
+                            loadingIndicator.classList.add('hidden');
+                            initialState.classList.remove('hidden');
+                        } else {
+                            throw new Error(data.error || 'Terjadi kesalahan saat generate prompt.');
+                        }
+                    } else {
+                        // Save the seed for regeneration
+                        lastUsedSeed = data.seed;
+                        seedValue.textContent = data.seed;
+                        seedContainer.classList.remove('hidden');
+                        
+                        // Bersihkan hasil sebelumnya
+                        promptResults.innerHTML = '';
+                        
+                        // Tampilkan prompt hasil
+                        data.prompts.forEach((prompt, index) => {
+                            const promptCard = document.createElement('div');
+                            promptCard.className = 'bg-dark bg-opacity-60 border border-gray-800 rounded-lg p-4 hover:translate-y-[-2px] hover:shadow-lg hover:border-yellow-500 hover:border-opacity-30 transition duration-300';
+                            promptCard.innerHTML = `
+                                <div class="flex justify-between items-center mb-3">
+                                    <div class="text-xs font-semibold text-gray-400 bg-dark-input py-1 px-3 rounded-full">Prompt ${index + 1}</div>
+                                    <button class="copy-btn bg-white bg-opacity-5 border-none text-gray-300 text-xs py-1 px-2 rounded flex items-center gap-1 hover:bg-opacity-10 hover:text-white transition-all" data-prompt="${prompt.replace(/"/g, '&quot;')}">
+                                        <i class="fas fa-copy"></i> Copy
+                                    </button>
+                                </div>
+                                <p class="prompt-text text-sm leading-relaxed text-gray-300 whitespace-pre-wrap">${prompt}</p>
+                            `;
+                            promptResults.appendChild(promptCard);
+                        });
+                        
+                        // Add to history
+                        addToHistory({
+                            keywords,
+                            style,
+                            complexity,
+                            seed: data.seed,
+                            timestamp: new Date().toISOString(),
+                            prompts: data.prompts
+                        });
+                        
+                        // Tambahkan event listener untuk tombol copy
+                        setupCopyButtons();
+                        
+                        loadingIndicator.classList.add('hidden');
+                        promptResults.classList.remove('hidden');
+                        actionButtons.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    alert(error.message || 'Terjadi kesalahan. Silakan coba lagi.');
+                    loadingIndicator.classList.add('hidden');
+                    initialState.classList.remove('hidden');
+                }
+            }
+            
+            // Setup copy buttons
+            function setupCopyButtons() {
+                document.querySelectorAll('.copy-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const promptText = this.getAttribute('data-prompt');
+                        navigator.clipboard.writeText(promptText).then(() => {
+                            this.classList.add('bg-green-900', 'bg-opacity-20', 'text-green-400');
+                            this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                            
+                            setTimeout(() => {
+                                this.classList.remove('bg-green-900', 'bg-opacity-20', 'text-green-400');
+                                this.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                            }, 2000);
+                        });
+                    });
+                });
+            }
+            
+            // Add to history
+            function addToHistory(historyItem) {
+                // Check for duplicates and remove them
+                promptHistory = promptHistory.filter(item => item.seed !== historyItem.seed);
+                
+                // Add new item to beginning
+                promptHistory.unshift(historyItem);
+                
+                // Limit history size
+                if (promptHistory.length > MAX_HISTORY_ITEMS) {
+                    promptHistory = promptHistory.slice(0, MAX_HISTORY_ITEMS);
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('promptHistory', JSON.stringify(promptHistory));
+                
+                // Update display
+                updateHistoryDisplay();
+            }
+            
+            // Update history display
+            function updateHistoryDisplay() {
+                if (promptHistory.length === 0) {
+                    noHistoryMessage.classList.remove('hidden');
+                    historyContainer.innerHTML = '';
+                    return;
+                }
+                
+                noHistoryMessage.classList.add('hidden');
+                historyContainer.innerHTML = '';
+                
+                promptHistory.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'bg-dark bg-opacity-50 border border-gray-800 rounded-lg p-4';
+                    
+                    const date = new Date(item.timestamp);
+                    const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    historyItem.innerHTML = `
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="font-semibold text-white">${item.keywords}</div>
+                            <div class="text-xs text-gray-400">${formattedDate}</div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 my-2">
+                            ${item.style ? `<div class="text-xs bg-dark-input text-gray-300 px-2 py-1 rounded-full">${item.style}</div>` : ''}
+                            <div class="text-xs bg-dark-input text-gray-300 px-2 py-1 rounded-full">${item.complexity}</div>
+                            <div class="text-xs bg-yellow-900 bg-opacity-10 text-yellow-300 px-2 py-1 rounded-full">seed: ${item.seed}</div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-3">
+                            <button class="history-btn text-xs py-1.5 px-2 rounded flex items-center gap-1 bg-primary bg-opacity-10 text-primary hover:bg-opacity-20 transition cursor-pointer" data-index="${index}">
+                                <i class="fas fa-arrow-rotate-left"></i> Load
+                            </button>
+                            <button class="history-btn text-xs py-1.5 px-2 rounded flex items-center gap-1 bg-transparent text-red-400 hover:bg-red-900 hover:bg-opacity-10 transition cursor-pointer" data-index="${index}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    `;
+                    
+                    historyContainer.appendChild(historyItem);
+                });
+                
+                // Setup event listeners for history items
+                document.querySelectorAll('.history-btn').forEach(button => {
+                    if (button.textContent.includes('Load')) {
+                        button.addEventListener('click', function() {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            const item = promptHistory[index];
+                            
+                            // Fill form with history item values
+                            document.getElementById('keywords').value = item.keywords;
+                            if (item.style) document.getElementById('style').value = item.style;
+                            document.getElementById('complexity').value = item.complexity;
+                            
+                            // Generate prompt using saved seed
+                            generatePrompt(item.seed);
+                        });
+                    } else {
+                        button.addEventListener('click', function() {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            promptHistory.splice(index, 1);
+                            localStorage.setItem('promptHistory', JSON.stringify(promptHistory));
+                            updateHistoryDisplay();
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

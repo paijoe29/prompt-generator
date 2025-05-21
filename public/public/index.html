@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clean Modern Chatbot & Prompt Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-color: #f9fafb;
+      --card-bg: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --border-color: #e5e7eb;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+    
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn {
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    .btn-outline {
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--bg-color);
+    }
+    
+    .input-field {
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    
+    .api-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .api-badge.active {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .api-badge.inactive {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+    
+    .navbar {
+      backdrop-filter: blur(8px);
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Animasi loading */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.6;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+    .pulse {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="navbar fixed top-0 left-0 right-0 z-10 shadow-sm">
+    <div class="container mx-auto px-4 sm:px-6 py-4">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <h1 class="text-xl font-bold">Chatbot & Prompt Generator</h1>
+        </div>
+        
+        <div class="relative w-full sm:w-auto flex items-center gap-2">
+          <div id="apiStatus" class="api-badge inactive">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>API Key Belum Di-set</span>
+          </div>
+          
+          <button id="showApiModal" class="btn btn-outline px-3 py-2 text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+            </svg>
+            <span>Set API Key</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- API Key Modal -->
+  <div id="apiKeyModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+    <div class="card p-6 max-w-md w-full mx-4">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">Set API Key</h3>
+        <button id="closeApiModal" class="text-gray-500 hover:text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="space-y-4">
+        <div>
+          <label for="userApiKey" class="block text-sm font-medium mb-1">API Key</label>
+          <input
+            type="text"
+            id="userApiKey"
+            class="input-field"
+            placeholder="Masukkan API Key"
+          />
+        </div>
+        
+        <div class="text-sm text-gray-600 space-y-2">
+          <p>API Key hanya digunakan untuk sesi ini dan tidak disimpan secara permanen.</p>
+          <p>
+            Untuk mendapatkan API secara gratis, silakan daftar di 
+            <a href="https://aistudio.google.com/" target="_blank" class="text-primary hover:underline">https://aistudio.google.com/</a>
+          </p>
+        </div>
+        
+        <div class="flex justify-end">
+          <button
+            id="saveApiKey"
+            class="btn btn-primary px-4 py-2"
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-grow container mx-auto px-4 sm:px-6 py-8 mt-16">
+    <div id="app" class="grid gap-6"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white shadow-inner mt-8">
+    <div class="container mx-auto px-4 sm:px-6 py-4 text-center text-gray-600">
+      <p>&copy; 2025 Dukung <a href="https://saweria.co/gotool/" target="_blank" class="text-primary hover:underline">Sini</a>.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    // Inisialisasi komponen UI
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inisialisasi feather icons
+      if (typeof feather !== 'undefined') {
+        feather.replace();
+      }
+      
+      // Modal API Key
+      const apiKeyModal = document.getElementById('apiKeyModal');
+      const showApiModal = document.getElementById('showApiModal');
+      const closeApiModal = document.getElementById('closeApiModal');
+      
+      showApiModal.addEventListener('click', () => {
+        apiKeyModal.classList.remove('hidden');
+      });
+      
+      closeApiModal.addEventListener('click', () => {
+        apiKeyModal.classList.add('hidden');
+      });
+      
+      // Tutup modal jika klik di luar modal
+      apiKeyModal.addEventListener('click', (e) => {
+        if (e.target === apiKeyModal) {
+          apiKeyModal.classList.add('hidden');
+        }
+      });
+    });
+
+    // Simpan API key hanya untuk sesi (tidak disimpan secara permanen)
+    let sessionApiKey = "";
+    const apiStatus = document.getElementById('apiStatus');
+    
+    document.getElementById('saveApiKey').addEventListener('click', () => {
+      sessionApiKey = document.getElementById('userApiKey').value.trim();
+      
+      if (sessionApiKey) {
+        // Update status badge
+        apiStatus.classList.remove('inactive');
+        apiStatus.classList.add('active');
+        apiStatus.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>API Key Aktif</span>
+        `;
+        
+        // Tutup modal
+        document.getElementById('apiKeyModal').classList.add('hidden');
+        
+        // Notifikasi sukses
+        showNotification('API Key berhasil disimpan', 'success');
+      } else {
+        showNotification('API Key tidak boleh kosong', 'error');
+      }
+    });
+    
+    // Fungsi notifikasi
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-lg ${
+        type === 'success' ? 'bg-green-50 text-green-800 border-l-4 border-green-500' :
+        type === 'error' ? 'bg-red-50 text-red-800 border-l-4 border-red-500' :
+        'bg-blue-50 text-blue-800 border-l-4 border-blue-500'
+      } transition-opacity duration-500 flex items-center gap-2 z-50`;
+      
+      notification.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${
+          type === 'success' ? 'text-green-500' :
+          type === 'error' ? 'text-red-500' :
+          'text-blue-500'
+        }">
+          ${type === 'success' 
+            ? '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>'
+            : type === 'error'
+            ? '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'
+            : '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>'
+          }
+        </svg>
+        <span>${message}</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 500);
+      }, 3000);
+    }
+
+    // Override fetch untuk menyertakan header Authorization jika API key tersedia
+    const originalFetch = window.fetch;
+    window.fetch = async (url, options = {}) => {
+      // Cek apakah URL mengarah ke endpoint yang membutuhkan API key
+      if ((url.includes('/chat') || url.includes('/generate-prompt')) && !sessionApiKey) {
+        showNotification('API key belum di-set. Mohon set API key terlebih dahulu.', 'error');
+        return Promise.reject(new Error('API key belum di-set'));
+      }
+      
+      if (sessionApiKey) {
+        options.headers = {
+          ...options.headers,
+          'Authorization': `Bearer ${sessionApiKey}`
+        };
+      }
+      
+      // Tambahkan indikator loading
+      const loadingId = showLoading();
+      
+      try {
+        const response = await originalFetch(url, options);
+        hideLoading(loadingId);
+        return response;
+      } catch (error) {
+        hideLoading(loadingId);
+        showNotification('Terjadi kesalahan saat menghubungi server: ' + error.message, 'error');
+        throw error;
+      }
+    };
+    
+    // Fungsi loading indicator
+    function showLoading() {
+      const loadingId = 'loading-' + Date.now();
+      const loadingEl = document.createElement('div');
+      loadingEl.id = loadingId;
+      loadingEl.className = 'fixed bottom-4 left-4 bg-white p-3 rounded-lg shadow-lg flex items-center gap-2 z-50';
+      loadingEl.innerHTML = `
+        <div class="w-4 h-4 rounded-full bg-primary pulse"></div>
+        <span class="text-sm font-medium">Memproses...</span>
+      `;
+      document.body.appendChild(loadingEl);
+      return loadingId;
+    }
+    
+    function hideLoading(id) {
+      const loadingEl = document.getElementById(id);
+      if (loadingEl) {
+        document.body.removeChild(loadingEl);
+      }
+    }
+
+    import PromptGenerator from './views/prompt.js';
+    const app = document.getElementById('app');
+    app.appendChild(PromptGenerator());
+  </script>
+</body>
+</html>
