@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text-to-Image Prompt Generator</title>
+    <title>Prompt Generator</title>
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,11 +36,16 @@
     </script>
 </head>
 <body class="bg-dark text-gray-100 font-sans">
-    <!-- Follow Me Button (Adjusted Position) -->
+    <!-- Follow Me and Support Me Buttons -->
     <div class="max-w-7xl mx-auto px-6 relative">
-        <a href="https://www.threads.com/@ori_fin" target="_blank" class="absolute top-4 right-6 z-50 bg-primary hover:bg-primary-hover text-black font-medium py-2 px-4 rounded-lg shadow-lg transform hover:-translate-y-1 transition duration-300 flex items-center">
-            <i class="fas fa-at mr-2"></i> Follow Me
-        </a>
+        <div class="absolute top-4 right-6 z-50 flex gap-3">
+            <a href="https://trakteer.id/orifin" target="_blank" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg shadow-lg transform hover:-translate-y-1 transition duration-300 flex items-center">
+                <i class="fas fa-heart mr-2"></i> Support Me
+            </a>
+            <a href="https://www.threads.com/@ori_fin" target="_blank" class="bg-primary hover:bg-primary-hover text-black font-medium py-2 px-4 rounded-lg shadow-lg transform hover:-translate-y-1 transition duration-300 flex items-center">
+                <i class="fas fa-at mr-2"></i> Follow Me
+            </a>
+        </div>
     </div>
 
     <!-- Main content -->
@@ -48,7 +54,7 @@
         <div class="text-center mb-12">
             <div class="relative inline-block">
                 <span class="absolute -inset-1 blur-xl bg-primary/10 rounded-lg"></span>
-                <h1 class="relative text-4xl md:text-5xl font-bold mb-4 text-white inline-block">Text-to-Image <span class="text-primary">Prompt Generator</span></h1>
+                <h1 class="relative text-4xl md:text-5xl font-bold mb-4 text-white inline-block"> <span class="text-primary">Prompt Generator</span></h1>
             </div>
             <p class="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed mt-6 backdrop-blur-sm bg-dark/30 p-4 rounded-lg border border-gray-800/50">
                 Buat prompt yang detail dan menarik untuk text-to-image AI seperti Midjourney, DALL-E, atau Stable Diffusion berdasarkan kata kunci yang Anda masukkan.
@@ -134,9 +140,9 @@
                         </div>
                         
                         <div class="mb-6">
-                            <label for="apiKey" class="block mb-2 text-sm font-medium text-gray-300">Google Gemini API Key (Opsional)</label>
-                            <input type="text" id="apiKey" class="w-full py-3 px-4 bg-dark-input text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200" placeholder="Masukkan API key Gemini Anda">
-                            <span class="block mt-2 text-xs text-gray-400">Jika tidak diisi, akan menggunakan API key dari server.</span>
+                            <label for="apiKey" class="block mb-2 text-sm font-medium text-gray-300">Google Gemini API Key </label>
+                            <input type="password" id="apiKey" class="w-full py-3 px-4 bg-dark-input text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-200" placeholder="Masukkan API key Gemini Anda">
+                            <span class="block mt-2 text-xs text-gray-400">Google API key bisa didapatkan di <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-primary hover:underline">https://aistudio.google.com/app/apikey</a>. Jika tidak diisi, akan menggunakan API key dari server.</span>
                         </div>
                         
                         <div class="text-center mt-8">
@@ -242,6 +248,21 @@
             const countValue = document.getElementById('count-value');
             const historyContainer = document.getElementById('historyContainer');
             const noHistoryMessage = document.getElementById('noHistoryMessage');
+            const apiKeyInput = document.getElementById('apiKey');
+            
+            // Load saved API key from localStorage if it exists
+            if(localStorage.getItem('geminiApiKey')) {
+                apiKeyInput.value = localStorage.getItem('geminiApiKey');
+            }
+            
+            // Save API key to localStorage when it changes
+            apiKeyInput.addEventListener('change', function() {
+                if(this.value.trim()) {
+                    localStorage.setItem('geminiApiKey', this.value.trim());
+                } else {
+                    localStorage.removeItem('geminiApiKey');
+                }
+            });
             
             // Set up count slider
             countSlider.addEventListener('input', function() {
